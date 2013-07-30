@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	APP_VERSION = "0.1"
+	VERSION = "0.1"
 )
 
 // command-line flags
@@ -19,7 +19,10 @@ func main() {
 	flag.Parse()
 
 	if *versionFlag {
-		fmt.Println("Version:", APP_VERSION)
+		fmt.Println(VERSION)
+		os.Exit(0)
 	}
+	facter := NewFacter()
+	facter.PrintAllValues()
 	os.Exit(0)
 }
