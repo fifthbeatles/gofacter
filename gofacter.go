@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"github.com/fifthbeatles/gofacter/facter"
 )
 
 const (
@@ -22,7 +23,8 @@ func main() {
 		fmt.Println(VERSION)
 		os.Exit(0)
 	}
-	facter := NewFacter()
-	facter.PrintAllValues()
+	
+	f := facter.NewFacter()
+	f.PrintAllValues()
 	os.Exit(0)
 }
