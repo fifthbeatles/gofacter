@@ -5,11 +5,21 @@ import (
 )
 
 type facter struct {
-	facts map[string]string
+	facts      map[string]string
+	collectors []Collector
 }
 
 func NewFacter() *facter {
-	return &facter{make(map[string]string)}
+	f := facter{facts: make(map[string]string)}
+	f.collectors = append(f.collectors, NewPathCollector())
+	return &f
+}
+
+func (f *facter) Collect() {
+	for _, c := range f.collectors {
+		fact_name, fact_value := c.Collect()
+		f.facts[fact_name] = fact_value
+	}
 }
 
 func (f *facter) Value(name string) (value string, ok bool) {
