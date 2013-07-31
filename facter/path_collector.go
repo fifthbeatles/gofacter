@@ -11,8 +11,7 @@ func NewPathCollector() Collector {
 	return &path_collector{}
 }
 
-func (pc *path_collector) Collect() (fact_name, fact_value string) {
-	fact_name = "path"
-	fact_value = env_path
+func (pc *path_collector) Collect() (facts [][2]string) {
+	facts = append(facts, [2]string{"path", env_path})
 	return
 }

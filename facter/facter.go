@@ -12,15 +12,15 @@ type facter struct {
 func NewFacter() *facter {
 	f := facter{facts: make(map[string]string)}
 	f.collectors = append(f.collectors, NewPathCollector())
-	f.collectors = append(f.collectors, NewIpaddressCollector())
-	f.collectors = append(f.collectors, NewIpaddress6Collector())
+	f.collectors = append(f.collectors, NewIpCollector())
 	return &f
 }
 
 func (f *facter) Collect() {
 	for _, c := range f.collectors {
-		fact_name, fact_value := c.Collect()
-		f.facts[fact_name] = fact_value
+		for _, fact_pair := range c.Collect() {
+			f.facts[fact_pair[0]] = fact_pair[1]
+		}
 	}
 }
 

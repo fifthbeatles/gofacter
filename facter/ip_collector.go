@@ -26,37 +26,26 @@ func run_ifconfig() (output string) {
 	return
 }
 
-type ipaddress_collector struct {
+type ip_collector struct {
 }
 
-func NewIpaddressCollector() Collector {
-	return &ipaddress_collector{}
+func NewIpCollector() Collector {
+	return &ip_collector{}
 }
 
-func (ic *ipaddress_collector) Collect() (fact_name, fact_value string) {
-	fact_name = "ipaddress"
+func (ic *ip_collector) Collect() (facts [][2]string) {
+	// ipv4
 	for _, matches := range re_inet_addr.FindAllStringSubmatch(ifconfig_output, -1) {
 		if !strings.HasPrefix(matches[1], "127.") {
-			fact_value = matches[1]
-			return
+			facts = append(facts, [2]string{"ipaddress", matches[1]})
+			break
 		}
 	}
-	return
-}
-
-type ipaddress6_collector struct {
-}
-
-func NewIpaddress6Collector() Collector {
-	return &ipaddress6_collector{}
-}
-
-func (ic *ipaddress6_collector) Collect() (fact_name, fact_value string) {
-	fact_name = "ipaddress6"
+	// ipv6
 	for _, matches := range re_inet6_addr.FindAllStringSubmatch(ifconfig_output, -1) {
 		if matches[1] != "::1" && !strings.HasPrefix(strings.ToLower(matches[1]), "fe80") {
-			fact_value = matches[1]
-			return
+			facts = append(facts, [2]string{"ipaddress6", matches[1]})
+			break
 		}
 	}
 	return

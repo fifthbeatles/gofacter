@@ -1,5 +1,6 @@
 package facter
 
 type Collector interface {
-	Collect() (fact_name, fact_value string)
+	// return [[key1, value1], [key2, value2],...]
+	Collect() (facts [][2]string)
 }
