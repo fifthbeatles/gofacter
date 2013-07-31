@@ -12,6 +12,8 @@ type facter struct {
 func NewFacter() *facter {
 	f := facter{facts: make(map[string]string)}
 	f.collectors = append(f.collectors, NewPathCollector())
+	f.collectors = append(f.collectors, NewIpaddressCollector())
+	f.collectors = append(f.collectors, NewIpaddress6Collector())
 	return &f
 }
 
