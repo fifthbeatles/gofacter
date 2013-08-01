@@ -12,7 +12,7 @@ type facter struct {
 func NewFacter() *facter {
 	f := facter{facts: make(map[string]string)}
 	f.collectors = append(f.collectors, NewPathCollector())
-	f.collectors = append(f.collectors, NewIpCollector())
+	f.collectors = append(f.collectors, NewInterfaceCollector())
 	f.collectors = append(f.collectors, NewMemoryCollector())
 	f.collectors = append(f.collectors, NewUptimeCollector())
 	f.collectors = append(f.collectors, NewTimezoneCollector())
