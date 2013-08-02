@@ -1,8 +1,6 @@
 package facter
 
 import (
-	"os"
-	"os/exec"
 	"regexp"
 	"strings"
 )
@@ -76,30 +74,4 @@ func (ic *interface_collector) Collect() (facts [][2]string) {
 		facts = append(facts, [2]string{"macaddress", macaddress[0]})
 	}
 	return
-}
-
-func run_ifconfig(arg ...string) (output string, err error) {
-	os.Setenv("LANG", "C")
-	output_bytes, err := exec.Command("/sbin/ifconfig", arg...).Output()
-	if err == nil {
-		output = string(output_bytes)
-	}
-	return
-}
-
-func get_faces() (faces []string) {
-	output, err := run_ifconfig()
-	if err != nil {
-		return
-	}
-	for _, line := range strings.Split(output, "\n") {
-		if matches := re_interface.FindStringSubmatch(line); len(matches) >= 2 && matches[1] != "lo" {
-			faces = append(faces, matches[1])
-		}
-	}
-	return
-}
-
-func isLocalIp6(ip6 string) bool {
-	return ip6 == "::1" || strings.HasPrefix(strings.ToLower(ip6), "fe80")
 }
