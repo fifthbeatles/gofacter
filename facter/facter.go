@@ -16,6 +16,7 @@ func NewFacter() *facter {
 	f.collectors = append(f.collectors, NewMemoryCollector())
 	f.collectors = append(f.collectors, NewUptimeCollector())
 	f.collectors = append(f.collectors, NewTimezoneCollector())
+	f.collectors = append(f.collectors, NewHostnameCollector())
 	return &f
 }
 
