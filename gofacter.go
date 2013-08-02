@@ -1,3 +1,6 @@
+/*
+A tool to collect information of the system, similar to facter writen in ruby
+*/
 package main
 
 import (
