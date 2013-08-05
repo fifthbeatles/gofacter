@@ -1,13 +1,13 @@
 package facter
 
-type hostname_collector struct {
+type hostnameCollector struct {
 }
 
 func NewHostnameCollector() Collector {
-	return &hostname_collector{}
+	return &hostnameCollector{}
 }
 
-func (hc *hostname_collector) Collect() (facts []Fact) {
+func (hc *hostnameCollector) Collect() (facts []Fact) {
 	hostname, domain := getHostnameAndDomain()
 	if len(hostname) > 0 {
 		facts = append(facts, Fact{"hostname", hostname})

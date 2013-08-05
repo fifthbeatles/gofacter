@@ -6,40 +6,40 @@ import (
 	"strings"
 )
 
-type uptime_collector struct {
+type uptimeCollector struct {
 }
 
 func NewUptimeCollector() Collector {
-	return &uptime_collector{}
+	return &uptimeCollector{}
 }
 
-func (uc *uptime_collector) Collect() (facts []Fact) {
+func (uc *uptimeCollector) Collect() (facts []Fact) {
 	content, err := ioutil.ReadFile("/proc/uptime")
 	if err != nil {
 		return
 	}
-	uptime_seconds_float, err := strconv.ParseFloat(strings.Split(string(content), " ")[0], 64)
+	uptimeSecondsFloat, err := strconv.ParseFloat(strings.Split(string(content), " ")[0], 64)
 	if err != nil {
 		return
 	}
-	uptime_seconds := int64(uptime_seconds_float)
-	uptime_hours := uptime_seconds / 3600
-	uptime_days := uptime_hours / 24
-	facts = append(facts, Fact{"uptime_seconds", strconv.Itoa(int(uptime_seconds))})
-	facts = append(facts, Fact{"uptime_hours", strconv.Itoa(int(uptime_hours))})
-	facts = append(facts, Fact{"uptime_days", strconv.Itoa(int(uptime_days))})
+	uptimeSeconds := int64(uptimeSecondsFloat)
+	uptimeHours := uptimeSeconds / 3600
+	uptimeDays := uptimeHours / 24
+	facts = append(facts, Fact{"uptimeSeconds", strconv.Itoa(int(uptimeSeconds))})
+	facts = append(facts, Fact{"uptimeHours", strconv.Itoa(int(uptimeHours))})
+	facts = append(facts, Fact{"uptimeDays", strconv.Itoa(int(uptimeDays))})
 
-	hours := uptime_hours % 24
-	minutes := (uptime_seconds / 60) % 60
-	var uptime_str string
-	switch uptime_days {
+	hours := uptimeHours % 24
+	minutes := (uptimeSeconds / 60) % 60
+	var uptimeStr string
+	switch uptimeDays {
 	case 0:
 	case 1:
-		uptime_str += "1 day "
+		uptimeStr += "1 day "
 	default:
-		uptime_str = uptime_str + strconv.Itoa(int(uptime_days)) + " days "
+		uptimeStr = uptimeStr + strconv.Itoa(int(uptimeDays)) + " days "
 	}
-	uptime_str = uptime_str + strconv.Itoa(int(hours)) + ":" + strconv.Itoa(int(minutes))
-	facts = append(facts, Fact{"uptime", uptime_str})
+	uptimeStr = uptimeStr + strconv.Itoa(int(hours)) + ":" + strconv.Itoa(int(minutes))
+	facts = append(facts, Fact{"uptime", uptimeStr})
 	return
 }

@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	re_domain   = `.+\..+`
-	re_hostname = regexp.MustCompile(`(.*?)\.(.+\..+$)`)
+	reInterface = regexp.MustCompile(`(^\S+)`)
+	reDomain    = `.+\..+`
+	reHostname  = regexp.MustCompile(`(.*?)\.(.+\..+$)`)
 )
 
 func KBToMB(KB int64) (MB string) {
@@ -18,22 +19,22 @@ func KBToMB(KB int64) (MB string) {
 	return
 }
 
-func run_ifconfig(arg ...string) (output string, err error) {
+func runIfconfig(arg ...string) (output string, err error) {
 	os.Setenv("LANG", "C")
-	output_bytes, err := exec.Command("/sbin/ifconfig", arg...).Output()
+	bytesOutput, err := exec.Command("/sbin/ifconfig", arg...).Output()
 	if err == nil {
-		output = string(output_bytes)
+		output = string(bytesOutput)
 	}
 	return
 }
 
-func get_faces() (faces []string) {
-	output, err := run_ifconfig()
+func getFaces() (faces []string) {
+	output, err := runIfconfig()
 	if err != nil {
 		return
 	}
 	for _, line := range strings.Split(output, "\n") {
-		if matches := re_interface.FindStringSubmatch(line); len(matches) >= 2 && matches[1] != "lo" {
+		if matches := reInterface.FindStringSubmatch(line); len(matches) >= 2 && matches[1] != "lo" {
 			faces = append(faces, matches[1])
 		}
 	}
@@ -50,7 +51,7 @@ func getHostnameAndDomain() (hostname, domain string) {
 		return
 	}
 	hostname = strings.TrimRight(string(output), "\n")
-	matches := re_hostname.FindStringSubmatch(hostname)
+	matches := reHostname.FindStringSubmatch(hostname)
 	if len(matches) >= 3 {
 		hostname = matches[1]
 		domain = matches[2]
@@ -59,18 +60,18 @@ func getHostnameAndDomain() (hostname, domain string) {
 	output, err = exec.Command("dnsdomainname").Output()
 	if err == nil {
 		domain = strings.TrimRight(string(output), "\n")
-		if ok, _ := regexp.MatchString(re_domain, domain); ok {
+		if ok, _ := regexp.MatchString(reDomain, domain); ok {
 			return
 		}
 	}
 	return
 }
 
-func run_uname(arg ...string) (output string) {
+func runUname(arg ...string) (output string) {
 	os.Setenv("LANG", "C")
-	output_bytes, err := exec.Command("/bin/uname", arg...).Output()
+	bytesOutput, err := exec.Command("/bin/uname", arg...).Output()
 	if err == nil {
-		output = strings.TrimRight(string(output_bytes), "\n")
+		output = strings.TrimRight(string(bytesOutput), "\n")
 	}
 	return
 }

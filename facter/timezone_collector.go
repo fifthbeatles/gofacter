@@ -5,14 +5,14 @@ import (
 	"time"
 )
 
-type timezone_collector struct {
+type timezoneCollector struct {
 }
 
 func NewTimezoneCollector() Collector {
-	return &timezone_collector{}
+	return &timezoneCollector{}
 }
 
-func (tc *timezone_collector) Collect() (facts []Fact) {
+func (tc *timezoneCollector) Collect() (facts []Fact) {
 	now := time.Now()
 	zone, offset := now.Zone()
 	facts = append(facts, Fact{"timezone", zone})

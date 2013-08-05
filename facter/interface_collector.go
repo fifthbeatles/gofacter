@@ -6,22 +6,21 @@ import (
 )
 
 var (
-	re_interface  = regexp.MustCompile(`(^\S+)`)
-	re_ipaddress  = regexp.MustCompile(`inet addr:([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
-	re_ipaddress6 = regexp.MustCompile(`inet6 addr: ((?:[0-9,a-f,A-F]*\:{1,2})+[0-9,a-f,A-F]{0,4})/`)
-	re_macaddress = regexp.MustCompile(`(?:ether|HWaddr)\s+(\w{1,2}:\w{1,2}:\w{1,2}:\w{1,2}:\w{1,2}:\w{1,2})`)
-	re_netmask    = regexp.MustCompile(`Mask:([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
+	reIpaddress  = regexp.MustCompile(`inet addr:([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
+	reIpaddress6 = regexp.MustCompile(`inet6 addr: ((?:[0-9,a-f,A-F]*\:{1,2})+[0-9,a-f,A-F]{0,4})/`)
+	reMacaddress = regexp.MustCompile(`(?:ether|HWaddr)\s+(\w{1,2}:\w{1,2}:\w{1,2}:\w{1,2}:\w{1,2}:\w{1,2})`)
+	reNetmask    = regexp.MustCompile(`Mask:([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)`)
 )
 
-type interface_collector struct {
+type interfaceCollector struct {
 }
 
 func NewInterfaceCollector() Collector {
-	return &interface_collector{}
+	return &interfaceCollector{}
 }
 
-func (ic *interface_collector) Collect() (facts []Fact) {
-	faces := get_faces()
+func (ic *interfaceCollector) Collect() (facts []Fact) {
+	faces := getFaces()
 	if len(faces) == 0 {
 		return
 	}
@@ -29,19 +28,19 @@ func (ic *interface_collector) Collect() (facts []Fact) {
 
 	var ipaddress, ipaddress6, netmask, macaddress []string
 	for _, face := range faces {
-		output, err := run_ifconfig(face)
+		output, err := runIfconfig(face)
 		if err != nil {
 			continue
 		}
 		var matches []string
 		// ipv4
-		matches = re_ipaddress.FindStringSubmatch(output)
+		matches = reIpaddress.FindStringSubmatch(output)
 		if len(matches) >= 2 {
 			facts = append(facts, Fact{"ipaddress_" + face, matches[1]})
 			ipaddress = append(ipaddress, matches[1])
 		}
 		// ipv6
-		matches = re_ipaddress6.FindStringSubmatch(output)
+		matches = reIpaddress6.FindStringSubmatch(output)
 		if len(matches) >= 2 {
 			if !isLocalIp6(matches[1]) {
 				facts = append(facts, Fact{"ipaddress6_" + face, matches[1]})
@@ -49,13 +48,13 @@ func (ic *interface_collector) Collect() (facts []Fact) {
 			}
 		}
 		// netmask
-		matches = re_netmask.FindStringSubmatch(output)
+		matches = reNetmask.FindStringSubmatch(output)
 		if len(matches) >= 2 {
 			facts = append(facts, Fact{"netmask_" + face, matches[1]})
 			netmask = append(netmask, matches[1])
 		}
 		// macaddress
-		matches = re_macaddress.FindStringSubmatch(output)
+		matches = reMacaddress.FindStringSubmatch(output)
 		if len(matches) >= 2 {
 			facts = append(facts, Fact{"macaddress_" + face, matches[1]})
 			macaddress = append(macaddress, matches[1])

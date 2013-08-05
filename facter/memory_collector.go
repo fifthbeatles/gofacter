@@ -11,14 +11,14 @@ var (
 	re = regexp.MustCompile(`(\S+):\s+(\d+).*\n`)
 )
 
-type memory_collector struct {
+type memoryCollector struct {
 }
 
 func NewMemoryCollector() Collector {
-	return &memory_collector{}
+	return &memoryCollector{}
 }
 
-func (mc *memory_collector) Collect() (facts []Fact) {
+func (mc *memoryCollector) Collect() (facts []Fact) {
 	f, err := os.Open("/proc/meminfo")
 	if err != nil {
 		return
