@@ -24,8 +24,8 @@ func NewFacter() *facter {
 
 func (f *facter) Collect() {
 	for _, c := range f.collectors {
-		for _, fact_pair := range c.Collect() {
-			f.facts[fact_pair[0]] = fact_pair[1]
+		for _, fact := range c.Collect() {
+			f.facts[fact.name] = fact.value
 		}
 	}
 }

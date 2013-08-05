@@ -18,7 +18,7 @@ func NewProcessorCollector() Collector {
 	return &processor_collector{}
 }
 
-func (pc *processor_collector) Collect() (facts [][2]string) {
+func (pc *processor_collector) Collect() (facts []Fact) {
 	f, err := os.Open("/proc/cpuinfo")
 	if err != nil {
 		return
@@ -33,10 +33,10 @@ func (pc *processor_collector) Collect() (facts [][2]string) {
 		}
 		matches := re_processor_desc.FindStringSubmatch(string(line))
 		if len(matches) >= 2 {
-			facts = append(facts, [2]string{"processor" + strconv.Itoa(count), matches[1]})
+			facts = append(facts, Fact{"processor" + strconv.Itoa(count), matches[1]})
 			count++
 		}
 	}
-	facts = append(facts, [2]string{"processor_count", strconv.Itoa(count)})
+	facts = append(facts, Fact{"processor_count", strconv.Itoa(count)})
 	return
 }

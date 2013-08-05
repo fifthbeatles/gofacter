@@ -13,7 +13,7 @@ func NewUptimeCollector() Collector {
 	return &uptime_collector{}
 }
 
-func (uc *uptime_collector) Collect() (facts [][2]string) {
+func (uc *uptime_collector) Collect() (facts []Fact) {
 	content, err := ioutil.ReadFile("/proc/uptime")
 	if err != nil {
 		return
@@ -25,9 +25,9 @@ func (uc *uptime_collector) Collect() (facts [][2]string) {
 	uptime_seconds := int64(uptime_seconds_float)
 	uptime_hours := uptime_seconds / 3600
 	uptime_days := uptime_hours / 24
-	facts = append(facts, [2]string{"uptime_seconds", strconv.Itoa(int(uptime_seconds))})
-	facts = append(facts, [2]string{"uptime_hours", strconv.Itoa(int(uptime_hours))})
-	facts = append(facts, [2]string{"uptime_days", strconv.Itoa(int(uptime_days))})
+	facts = append(facts, Fact{"uptime_seconds", strconv.Itoa(int(uptime_seconds))})
+	facts = append(facts, Fact{"uptime_hours", strconv.Itoa(int(uptime_hours))})
+	facts = append(facts, Fact{"uptime_days", strconv.Itoa(int(uptime_days))})
 
 	hours := uptime_hours % 24
 	minutes := (uptime_seconds / 60) % 60
@@ -40,6 +40,6 @@ func (uc *uptime_collector) Collect() (facts [][2]string) {
 		uptime_str = uptime_str + strconv.Itoa(int(uptime_days)) + " days "
 	}
 	uptime_str = uptime_str + strconv.Itoa(int(hours)) + ":" + strconv.Itoa(int(minutes))
-	facts = append(facts, [2]string{"uptime", uptime_str})
+	facts = append(facts, Fact{"uptime", uptime_str})
 	return
 }

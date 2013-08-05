@@ -12,10 +12,10 @@ func NewTimezoneCollector() Collector {
 	return &timezone_collector{}
 }
 
-func (tc *timezone_collector) Collect() (facts [][2]string) {
+func (tc *timezone_collector) Collect() (facts []Fact) {
 	now := time.Now()
 	zone, offset := now.Zone()
-	facts = append(facts, [2]string{"timezone", zone})
-	facts = append(facts, [2]string{"timezone_offset", strconv.Itoa(offset)})
+	facts = append(facts, Fact{"timezone", zone})
+	facts = append(facts, Fact{"timezone_offset", strconv.Itoa(offset)})
 	return
 }

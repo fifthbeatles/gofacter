@@ -18,7 +18,7 @@ func NewMemoryCollector() Collector {
 	return &memory_collector{}
 }
 
-func (mc *memory_collector) Collect() (facts [][2]string) {
+func (mc *memory_collector) Collect() (facts []Fact) {
 	f, err := os.Open("/proc/meminfo")
 	if err != nil {
 		return
@@ -44,9 +44,9 @@ func (mc *memory_collector) Collect() (facts [][2]string) {
 			swapFree, _ = strconv.ParseInt(matches[2], 10, 64)
 		}
 	}
-	facts = append(facts, [2]string{"memorysize", KBToMB(memTotal)})
-	facts = append(facts, [2]string{"memoryfree", KBToMB(memFree)})
-	facts = append(facts, [2]string{"swapsize", KBToMB(swapTotal)})
-	facts = append(facts, [2]string{"swapfree", KBToMB(swapFree)})
+	facts = append(facts, Fact{"memorysize", KBToMB(memTotal)})
+	facts = append(facts, Fact{"memoryfree", KBToMB(memFree)})
+	facts = append(facts, Fact{"swapsize", KBToMB(swapTotal)})
+	facts = append(facts, Fact{"swapfree", KBToMB(swapFree)})
 	return
 }
